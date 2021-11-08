@@ -1,4 +1,28 @@
 import pygame as pg
+import random
+
+posicionesPosibles = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+def generarMovimientoDeMaquina():
+    if len(posicionesPosibles) == 0:
+        return
+    posicionUsada = posicionesPosibles[random.randrange(0, len(posicionesPosibles))]
+
+    index = 1
+
+    columnaX = 200
+    filaY = 100
+
+    for fila in range(0, 3):
+        for columna in range(0, 3):
+            if index == posicionUsada:
+                dibujarCruzEn(columnaX, filaY)
+                posicionesPosibles.remove(index)
+            columnaX += 100
+            index += 1
+        columnaX = 200
+        filaY += 100
 
 
 def dibujarCruzEn(columna, fila):
@@ -21,8 +45,14 @@ def escanearClicks(mousePos):
     for fila in range(0, 3):
         for columna in range(0, 3):
             if columnaX < posX < columnaX + 100 and filaY < posY < filaY + 100:
-                print(index)
+                if index not in posicionesPosibles:
+                    return
+
+                print("Se clickeo la casilla: " + str(index))
                 dibujarCirculoEn(columnaX, filaY)
+                posicionesPosibles.remove(index)
+                generarMovimientoDeMaquina()
+                return
             columnaX += 100
             index += 1
         columnaX = 200
@@ -37,8 +67,8 @@ window.fill((255, 255, 255))
 run = True
 
 linesColor = (0, 0, 0)
-crossColor = (80,80,80)
-circleColor = (80,80,80)
+crossColor = (46, 53, 255)
+circleColor = (255, 41, 41)
 
 point1 = (200, 200)
 point2 = (500, 200)
