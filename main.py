@@ -2,6 +2,49 @@ import pygame as pg
 import random
 
 posicionesPosibles = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+casillasOcupadas = [0, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0]  # 1 = Circulo, 2 = Cruz
+
+jugadorGanador = ""
+
+gano = False
+
+def escanearFilasPara(num):
+    if (casillasOcupadas[0] == num and casillasOcupadas[1] == num and casillasOcupadas[2] == num) or \
+            (casillasOcupadas[3] == num and casillasOcupadas[4] == num and casillasOcupadas[5] == num) or \
+            (casillasOcupadas[6] == num and casillasOcupadas[7] == num and casillasOcupadas[8] == num):
+        return True
+    return False
+
+
+def escanearColumnasPara(num):
+    if (casillasOcupadas[0] == num and casillasOcupadas[3] == num and casillasOcupadas[6] == num) or \
+            (casillasOcupadas[1] == num and casillasOcupadas[4] == num and casillasOcupadas[7] == num) or \
+            (casillasOcupadas[2] == num and casillasOcupadas[5] == num and casillasOcupadas[8] == num):
+        return True
+    return False
+
+
+def escanearDiagonalesPara(num):
+    if (casillasOcupadas[0] == num and casillasOcupadas[4] == num and casillasOcupadas[8] == num) or \
+            (casillasOcupadas[2] == num and casillasOcupadas[4] == num and casillasOcupadas[6] == num):
+        return True
+    return False
+
+
+def escanearGanador():
+    global jugadorGanador
+
+    if escanearFilasPara(1) or escanearColumnasPara(1) or escanearDiagonalesPara(1):
+        jugadorGanador = "Circulo"
+        return True
+
+    if escanearFilasPara(2) or escanearColumnasPara(2) or escanearDiagonalesPara(2):
+        jugadorGanador = "Cruz"
+        return True
+
+    return False
 
 
 def generarMovimientoDeMaquina():
@@ -17,8 +60,16 @@ def generarMovimientoDeMaquina():
     for fila in range(0, 3):
         for columna in range(0, 3):
             if index == posicionUsada:
+                # Genero la cruz
                 dibujarCruzEn(columnaX, filaY)
+                casillasOcupadas[index - 1] = 2
                 posicionesPosibles.remove(index)
+
+                global turno
+                turno = 0
+
+                return
+
             columnaX += 100
             index += 1
         columnaX = 200
@@ -48,10 +99,16 @@ def escanearClicks(mousePos):
                 if index not in posicionesPosibles:
                     return
 
-                print("Se clickeo la casilla: " + str(index))
+                # Genero el circulo
                 dibujarCirculoEn(columnaX, filaY)
+                casillasOcupadas[index - 1] = 1
                 posicionesPosibles.remove(index)
-                generarMovimientoDeMaquina()
+
+                global turno
+                turno = 1
+
+                print(casillasOcupadas)
+
                 return
             columnaX += 100
             index += 1
@@ -80,6 +137,9 @@ point6 = (300, 400)
 point7 = (400, 100)
 point8 = (400, 400)
 
+# 0 = Jugador, 1 = Maquina
+turno = 0
+
 while run:
     pg.draw.line(window, linesColor, point1, point2)
     pg.draw.line(window, linesColor, point3, point4)
@@ -90,7 +150,17 @@ while run:
         if event.type == pg.QUIT:
             run = False
         if event.type == pg.MOUSEBUTTONDOWN:
-            escanearClicks(pg.mouse.get_pos())
+            if not gano:
+                if turno == 0:
+                    escanearClicks(pg.mouse.get_pos())
+                if turno == 1:
+                    generarMovimientoDeMaquina()
+
+                ganoJuego = escanearGanador()
+
+                if ganoJuego:
+                    gano = True
+                    print(jugadorGanador)
 
     pg.display.update()
 
