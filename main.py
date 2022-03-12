@@ -127,29 +127,31 @@ linesColor = (0, 0, 0)
 crossColor = (46, 53, 255)
 circleColor = (255, 41, 41)
 
-point1 = (200, 200)
-point2 = (500, 200)
-point3 = (200, 300)
-point4 = (500, 300)
+startHorizontal1 = (200, 200)
+endHorizontal1 = (500, 200)
 
-point5 = (300, 100)
-point6 = (300, 400)
-point7 = (400, 100)
-point8 = (400, 400)
+startHorizontal2 = (200, 300)
+endHorizontal2 = (500, 300)
+
+startVertical1 = (300, 100)
+endVertical1 = (300, 400)
+
+startVertical2 = (400, 100)
+endVertical2 = (400, 400)
 
 # 0 = Jugador, 1 = Maquina
 turno = 0
 
 while run:
-    pg.draw.line(window, linesColor, point1, point2)
-    pg.draw.line(window, linesColor, point3, point4)
-    pg.draw.line(window, linesColor, point5, point6)
-    pg.draw.line(window, linesColor, point7, point8)
+    pg.draw.line(window, linesColor, startHorizontal1, endHorizontal1)
+    pg.draw.line(window, linesColor, startHorizontal2, endHorizontal2)
+    pg.draw.line(window, linesColor, startVertical1, endVertical1)
+    pg.draw.line(window, linesColor, startVertical2, endVertical2)
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
             run = False
-        if event.type == pg.MOUSEBUTTONDOWN:
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
             if not gano:
                 if turno == 0:
                     escanearClicks(pg.mouse.get_pos())
